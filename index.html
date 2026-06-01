@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mural Interactivo: Estrés y Evaluación</title>
+    <style>
+        :root {
+            --bg-board: #eef1f6; /* Fondo azul grisáceo muy suave y zen */
+            --card-bg: #ffffff;
+            --mint: #bbf2d6;
+            --peach: #ffd3b6;
+            --rose: #ffb7b2;
+            --lavender: #e8dbfc;
+            --text-dark: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-board);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 35px;
+            background: white;
+            padding: 25px 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            border-top: 8px solid #bbf2d6;
+        }
+
+        header h1 { margin: 0; color: #34495e; font-size: 2.2rem; }
+        header p { margin: 8px 0 0 0; font-style: italic; color: #7f8c8d; font-size: 1.1rem; }
+
+        .mural-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+
+        .emoji-header {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        h2 { color: #2c3e50; margin-top: 0; font-size: 1.4rem; border-bottom: 2px dashed #e2e8f0; padding-bottom: 10px; }
+        p { line-height: 1.6; font-size: 0.95rem; color: #576574; }
+
+        /* Tarjetas estilo Post-it de Colores */
+        .post-it-mint { background-color: var(--mint); }
+        .post-it-peach { background-color: var(--peach); }
+        .post-it-rose { background-color: var(--rose); }
+        .post-it-lavender { background-color: var(--lavender); }
+
+        /* Dinámica Interactiva: El Termómetro del Examen */
+        .vote-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .vote-btn {
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: #2c3e50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.1s;
+        }
+        .vote-btn:active { transform: scale(0.98); }
+        .count-badge { background: white; padding: 2px 10px; border-radius: 20px; font-size: 0.85rem; }
+
+        /* Muro de ideas inferior */
+        .muro-ideas {
+            grid-column: 1 / -1;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .input-area {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .input-area input {
+            padding: 12px 20px;
+            width: 50%;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+        }
+        .input-area input:focus { border-color: #9cd3bc; }
+        .btn-submit {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-submit:hover { background: #34495e; }
+
+        .container-notas {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+        .nota-adhesiva {
+            background: #fffb96;
+            padding: 20px;
+            width: 200px;
+            min-height: 120px;
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.05);
+            transform: rotate(-1.5deg);
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-size: 0.95rem;
+            color: #333;
+            text-align: left;
+            border-bottom-right-radius: 30px 5px;
+        }
+        .nota-adhesiva:nth-child(2n) { transform: rotate(2deg); background: #e3fafc; }
+        .nota-adhesiva:nth-child(3n) { transform: rotate(-1deg); background: #f3e5f5; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>📝 Estrés y Evaluación: Rediseñando la Meta</h1>
+        <p>¿Medimos conocimiento o medimos la resistencia a la presión? Una mirada reflexiva.</p>
+    </header>
+
+    <div class="mural-grid">
+
+        <div class="card">
+            <span class="emoji-header">📊</span>
+            <h2>¿Cómo viven la evaluación?</h2>
+            <p>Vota según lo que observas en tus estudiantes durante la semana de exámenes o entregas finales:</p>
+            <div class="vote-section">
+                <button class="vote-btn" style="background-color: var(--mint);" onclick="votar('paz')">🕊️ Motivados y enfocados <span class="count-badge" id="paz">3</span></button>
+                <button class="vote-btn" style="background-color: var(--peach);" onclick="votar('alerta')">⚡ Ansiosos pero funcionales <span class="count-badge" id="alerta">14</span></button>
+                <button class="vote-btn" style="background-color: var(--rose);" onclick="votar('panico')">🚨 Bloqueados por el pánico <span class="count-badge" id="panico">8</span></button>
+            </div>
+        </div>
+
+        <div class="card post-it-peach">
+            <span class="emoji-header">🧠</span>
+            <h2>El secuestro amigdalino</h2>
+            <p>Cuando un estudiante experimenta un alto nivel de estrés ante un examen, su cerebro libera cortisol y adrenalina. Esto <strong>"apaga" la corteza prefrontal</strong>, bloqueando la memoria y la lógica. El alumno no olvidó la materia; su cerebro se defendió de una amenaza.</p>
+        </div>
+
+        <div class="card post-it-mint">
+            <span class="emoji-header">🎯</span>
+            <h2>Evaluación Formativa</h2>
+            <p>Reducir el peso de un único examen final distribuyendo la nota en pequeños retos semanales disminuye drásticamente la ansiedad. Evaluemos el <strong>proceso continuo</strong>, no solo la foto final.</p>
+        </div>
+
+        <div class="card post-it-lavender">
+            <span class="emoji-header">⏰</span>
+            <h2>El factor tiempo</h2>
+            <p>Diseñar pruebas donde el tiempo sea un recurso justo (y no una carrera contra el reloj) permite que los alumnos procesen mejor las preguntas. Las evaluaciones a contra reloj miden velocidad, no necesariamente comprensión profunda.</p>
+        </div>
+
+        <div class="card post-it-rose">
+            <span class="emoji-header">💬</span>
+            <h2>El feedback constructivo</h2>
+            <p>Un número rojo desmotiva; una nota con comentarios que expliquen <em>cómo mejorar</em> abre caminos. Cambiemos el enfoque del error como "castigo" al <strong>error como trampolín de aprendizaje</strong>.</p>
+        </div>
+
+        <div class="card">
+            <span class="emoji-header">💡</span>
+            <h2>Estrategias Anti-Estrés</h2>
+            <p>Prácticas sencillas antes de repartir la prueba:</p>
+            <ul>
+                <li><strong>Normalizar el error:</strong> Recordarles que una nota no define su valor humano.</li>
+                <li><strong>Pregunta comodín:</strong> Iniciar el examen con una pregunta libre o un espacio para dibujar alivia la tensión inicial.</li>
+            </ul>
+        </div>
+
+        <div class="muro-ideas">
+            <h2>✨ Alternativas Creativas de Evaluación</h2>
+            <p>¿Qué formatos usas en clase para evaluar sin recurrir al examen tradicional? ¡Pega una idea para inspirar a otros docentes!</p>
+            <div class="input-area">
+                <input type="text" id="ideaInput" placeholder="Ej: Proyectos ABP, debates, diarios de aprendizaje...">
+                <button class="btn-submit" onclick="agregarNota()">Pegar en el Mural</button>
+            </div>
+            <div class="container-notas" id="muroNotas">
+                <div class="nota-adhesiva">¡Evaluación por portafolio! Los alumnos eligen sus mejores trabajos del trimestre para ser calificados.</div>
+                <div class="nota-adhesiva">Hacer exámenes en parejas donde puedan discutir la solución. ¡Fomenta la colaboración!</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Sistema de votación
+        const conteos = { paz: 3, alerta: 14, panico: 8 };
+        function votar(tipo) {
+            conteos[tipo]++;
+            document.getElementById(tipo).innerText = conteos[tipo];
+        }
+
+        // Sistema para agregar notas al vuelo
+        function agregarNota() {
+            const input = document.getElementById('ideaInput');
+            const texto = input.value.trim();
+            
+            if(texto === "") {
+                alert("¡Escribe una idea primero!");
+                return;
+            }
+
+            const nuevaNota = document.createElement('div');
+            nuevaNota.className = 'nota-adhesiva';
+            nuevaNota.innerText = texto;
+
+            document.getElementById('muroNotas').appendChild(nuevaNota);
+            input.value = ""; // Limpiar el campo
+        }
+    </script>
+</body>
+</html>
